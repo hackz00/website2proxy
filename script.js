@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Site Overlay Toggler
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to configure. Press Alt key alone to toggle (if configured for the site).
-// @author       Grok
+// @author       hackz00
 // @match        *://*/*
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -33,7 +33,7 @@
 
     function configure() {
         // Prompt for host domain (default current)
-        let hostDomain = prompt('Enter the host domain where the toggle should work (e.g., herricks.org):', location.hostname);
+        let hostDomain = prompt('Enter the host domain where the toggle should work (e.g., google.com):', location.hostname);
         if (hostDomain) {
             GM_setValue('hostDomain', hostDomain);
         } else {
