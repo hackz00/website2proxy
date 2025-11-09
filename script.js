@@ -14,7 +14,7 @@
 
     let hostDomain = GM_getValue('hostDomain');
     if (!hostDomain) {
-        hostDomain = prompt('Enter the host domain where the toggle should work (e.g., herricks.org):');
+        hostDomain = prompt('Enter the host domain where the toggle should work (e.g., google.com):');
         if (hostDomain) {
             GM_setValue('hostDomain', hostDomain);
         } else {
