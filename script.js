@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Site Overlay Toggler
 // @namespace    http://tampermonkey.net/
-// @version      0.2
-// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to toggle or configure if not set.
-// @author       Grok
+// @version      0.3
+// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to toggle or configure if not set. Uses a proxy to attempt bypassing iframe restrictions.
+// @author       hackz00
 // @match        *://*/*
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -70,7 +70,9 @@
             document.body.style.display = 'none';
 
             iframe = document.createElement('iframe');
-            iframe.src = GM_getValue('targetURL'); // Use stored value
+            // Use a public CORS proxy to attempt to bypass X-Frame-Options
+            const proxyURL = 'https://corsproxy.io/?' + encodeURIComponent(GM_getValue('targetURL'));
+            iframe.src = proxyURL;
             iframe.style.position = 'fixed';
             iframe.style.top = '0';
             iframe.style.left = '0';
