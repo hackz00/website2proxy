@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Site Overlay Toggler
 // @namespace    http://tampermonkey.net/
-// @version      0.5
-// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to configure. Press Alt key alone to toggle (if configured for the site).
+// @version      0.7
+// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to configure. Press Alt key alone to toggle (if configured for the site). Added small 'X' close button in top-right when overlaid.
 // @author       hackz00
 // @match        *://*/*
 // @grant        GM_getValue
@@ -13,6 +13,7 @@
     'use strict';
 
     let iframe = null;
+    let toggleButton = null;
     let isToggled = false;
     let originalBodyDisplay = '';
 
@@ -58,6 +59,10 @@
                 iframe.remove();
                 iframe = null;
             }
+            if (toggleButton) {
+                toggleButton.remove();
+                toggleButton = null;
+            }
             document.body.style.display = originalBodyDisplay;
             isToggled = false;
         } else {
@@ -80,6 +85,28 @@
 
             // Append to html to bypass body hiding
             document.documentElement.appendChild(iframe);
+
+            // Add small 'X' toggle button in top-right
+            toggleButton = document.createElement('button');
+            toggleButton.innerText = 'X';
+            toggleButton.style.position = 'fixed';
+            toggleButton.style.top = '0px';
+            toggleButton.style.right = '0px';
+            toggleButton.style.zIndex = '1000000';
+            toggleButton.style.background = 'red';
+            toggleButton.style.color = 'white';
+            toggleButton.style.padding = '2px 6px';
+            toggleButton.style.border = '1px solid white';
+            toggleButton.style.fontSize = '12px';
+            toggleButton.style.cursor = 'pointer';
+            toggleButton.style.width = '20px';
+            toggleButton.style.height = '20px';
+            toggleButton.style.display = 'flex';
+            toggleButton.style.alignItems = 'center';
+            toggleButton.style.justifyContent = 'center';
+            toggleButton.onclick = toggleOverlay;
+            document.documentElement.appendChild(toggleButton);
+
             isToggled = true;
         }
     }
