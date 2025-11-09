@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Site Overlay Toggler
 // @namespace    http://tampermonkey.net/
-// @version      0.3
-// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to toggle or configure if not set. Uses a proxy to attempt bypassing iframe restrictions.
-// @author       hackz00
+// @version      0.4
+// @description  Toggle a fullscreen iframe overlay on a specified host website to display another site on top. Press Alt + Left Arrow to configure. Press Alt key alone to toggle (if configured for the site).
+// @author       Grok
 // @match        *://*/*
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -18,42 +18,38 @@
 
     document.addEventListener('keydown', function(e) {
         if (e.altKey && e.key === 'ArrowLeft') {
-            e.preventDefault(); // Prevent default browser behavior if needed
-
-            // Check and prompt for host domain if not set
+            e.preventDefault();
+            configure();
+        } else if (e.key === 'Alt') {
+            // Check if configured and on matching host
             let hostDomain = GM_getValue('hostDomain');
-            if (!hostDomain) {
-                hostDomain = prompt('Enter the host domain where the toggle should work (e.g., herricks.org):', location.hostname);
-                if (hostDomain) {
-                    GM_setValue('hostDomain', hostDomain);
-                } else {
-                    alert('No host domain provided. Cannot proceed.');
-                    return;
-                }
+            if (hostDomain && location.hostname.includes(hostDomain)) {
+                e.preventDefault();
+                toggleOverlay();
             }
-
-            // Only proceed if on matching host
-            if (!location.hostname.includes(hostDomain)) {
-                alert('This toggle is configured for ' + hostDomain + ', not the current site.');
-                return;
-            }
-
-            // Check and prompt for target URL if not set
-            let targetURL = GM_getValue('targetURL');
-            if (!targetURL) {
-                targetURL = prompt('Enter the full URL of the website you want to overlay (e.g., https://example.com):');
-                if (targetURL) {
-                    GM_setValue('targetURL', targetURL);
-                } else {
-                    alert('No URL provided. Cannot proceed.');
-                    return;
-                }
-            }
-
-            // Now toggle
-            toggleOverlay();
+            // Else do nothing
         }
     });
+
+    function configure() {
+        // Prompt for host domain (default current)
+        let hostDomain = prompt('Enter the host domain where the toggle should work (e.g., herricks.org):', location.hostname);
+        if (hostDomain) {
+            GM_setValue('hostDomain', hostDomain);
+        } else {
+            alert('No host domain provided. Configuration cancelled.');
+            return;
+        }
+
+        // Prompt for target URL
+        let targetURL = prompt('Enter the full URL of the website you want to overlay (e.g., https://example.com):');
+        if (targetURL) {
+            GM_setValue('targetURL', targetURL);
+            alert('Configuration saved. Now press Alt (alone) on the configured site to toggle.');
+        } else {
+            alert('No URL provided. Configuration cancelled.');
+        }
+    }
 
     function toggleOverlay() {
         if (isToggled) {
@@ -70,9 +66,7 @@
             document.body.style.display = 'none';
 
             iframe = document.createElement('iframe');
-            // Use a public CORS proxy to attempt to bypass X-Frame-Options
-            const proxyURL = 'https://corsproxy.io/?' + encodeURIComponent(GM_getValue('targetURL'));
-            iframe.src = proxyURL;
+            iframe.src = GM_getValue('targetURL'); // Direct iframe, no proxy
             iframe.style.position = 'fixed';
             iframe.style.top = '0';
             iframe.style.left = '0';
