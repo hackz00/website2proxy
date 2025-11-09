@@ -4,17 +4,13 @@ A Tampermonkey userscript that lets you toggle a fullscreen overlay of one websi
 
 ## Features
 - Runs on a configurable host (e.g., herricks.org).
-- Prompts for the host domain and overlay target URL on first use.
+- Prompts for the host domain and overlay target URL only when Alt + Left Arrow is pressed if not set.
 - Toggle with Alt + Left Arrow key.
 - Hides the original page content when overlaid.
 - Restores original when toggled off.
+- Uses a public proxy to attempt bypassing iframe restrictions (X-Frame-Options).
 
 ## Installation
 1. Install [Tampermonkey](https://www.tampermonkey.net/).
 2. Copy the script code into a new Tampermonkey script.
-3. Configure via prompts or edit the code.
-
-## Limitations
-- Won't work if the target site blocks iframes (common for security).
-- This is for personal use; not intended for deception or bypassing restrictions—use responsibly.
-- No support for mobile or non-standard browsers.
+3. Configure by pressing the toggle key on the host site.
