@@ -18,6 +18,3 @@ A Tampermonkey userscript that lets you toggle a fullscreen overlay of one websi
 - Won't work if the target site blocks iframes (common for security).
 - This is for personal use; not intended for deception or bypassing restrictions—use responsibly.
 - No support for mobile or non-standard browsers.
-
-## Updates
-- v0.1: Initial release with basic toggle and configuration.
